@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 
-class CommentController extends Controller
+class CommentController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -36,7 +36,7 @@ class CommentController extends Controller
                 'comment' => 'required|string',
             ]);
             $comment = new Comment;
-            $comment->comment = $validated_data['comment'];           
+            $comment->comment = $validated_data['comment'];
             $comment->save();
             return response()->json([
                 'message' => 'Comment added successfully'
@@ -72,7 +72,6 @@ class CommentController extends Controller
 
     public function update(Request $request, $id)
     {
-        
     }
 
 
