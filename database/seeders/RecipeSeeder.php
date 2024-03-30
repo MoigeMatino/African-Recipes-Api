@@ -102,6 +102,5 @@ class RecipeSeeder extends Seeder
         }
 
         // Add data to the comments table
-
     }
 }
