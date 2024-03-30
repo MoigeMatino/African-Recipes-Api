@@ -31,18 +31,18 @@ class SubscriberController extends Controller
     {
         try {
             $request->validate([
-                "name" => "required|string|max:255",
-                "email" => "required|unique:users,email",
+                'name' => 'required|string|max:255',
+                'email' => 'required|unique:users,email',
             ]);
 
             $subscriber = Subscriber::create([
-                "name" => $request->name,
-                "email" => $request->email,
+                'name' => $request->name,
+                'email' => $request->email,
             ]);
 
-            return redirect()->route('subscriber.show', $subscriber)->with(["success", "Sucessfully subscribed!"]);
+            return redirect()->route('subscriber.show', $subscriber)->with(['success', 'Sucessfully subscribed!']);
         } catch (\Throwable $th) {
-            redirect()->back()->with("error", $th->getMessage());
+            redirect()->back()->with('error', $th->getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class SubscriberController extends Controller
 
         $subscriber->update(['name' => $request->name]);
 
-        return redirect()->route('subscriber.show', $subscriber)->with('success', 'Field updated.';
+        return redirect()->route('subscriber.show', $subscriber)->with(['success', 'Field updated.']);
     }
 
     /**
