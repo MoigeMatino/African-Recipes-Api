@@ -38,6 +38,5 @@ class TagSeeder extends Seeder
             $comment = $comments[$key];
             $tag = $comment->tags()->create(['tag' => fake()->word]);
         }
-
     }
 }

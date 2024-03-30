@@ -7,7 +7,6 @@ use App\Models\Comment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 
-
 class CommentController extends Controller
 {
     /**
@@ -15,7 +14,10 @@ class CommentController extends Controller
      */
     public function index()
     {
-        return Comment::all();
+        $comments = Comment::paginate(10);
+        return response()->json([
+            'comments' => $comments,
+        ], 200);
     }
 
     /**
@@ -29,64 +31,59 @@ class CommentController extends Controller
 
     public function store(Request $request)
     {
-        try{
+        try {
             $validated_data = $request->validate([
                 'comment' => 'required|string',
-                
             ]);
-            Comment::create($validated_data);
+            $comment = new Comment;
+            $comment->comment = $validated_data['comment'];           
+            $comment->save();
             return response()->json([
                 'message' => 'Comment added successfully'
             ], 201);
-        } catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json(['message' => 'error', 'error' => $e->getMessage()], 500);
         }
     }
-    
+
     public function show($id)
     {
         $comment = Comment::find($id);
-        if (!$comment){
+        if (!$comment) {
             return response()->json(['message' => 'Comment not found'], 404);
         }
         return response()->json(['comment' => $comment], 200);
     }
 
 
-    public function edit(string $id)
+    public function edit(Request $request, Comment $comment)
     {
-        // Get the comment by its id and pass it to the view
-        // return View('comments.edit')->withComment(Comment::find($id));
-    }
-
-    
-    public function update(Request $request, $id)
-    {
-        // $comment = Comment::findOrFail($id);
-        // $comment->update($request->all());
-        // return response()->json($comment, 200);
-        try{
-            $comment = Comment::findOrFail($id);
+        try {
+            $request->validate();
+            $comment->update(['comment' => $request->comment]);
             return response()->json($comment, 200);
-        }catch (ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Comment not found'], 404);
         } catch (Exception $e) {
             return response()->json(['message' => 'error', 'error' => $e->getMessage()], 500);
         }
     }
 
-    
+
+    public function update(Request $request, $id)
+    {
+        
+    }
+
+
     public function destroy($id)
     {
-        // $comment = Comment::findOrFail($id);
-        // $comment->delete();
-        // return response()->json(null, 204);
-        try{
+        try {
             $comment = Comment::findOrFail($id);
             $comment->delete();
             return response()->json(null, 204);
-        }catch(ModelNotFoundException $e){
-            return response()->json(null, 404);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error_message' => $e], 404);
         }
     }
 }

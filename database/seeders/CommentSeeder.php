@@ -25,8 +25,6 @@ class CommentSeeder extends Seeder
                 $new_comment->author()->associate($user);
                 $new_comment->save();
             }
-
         }
-
     }
 }

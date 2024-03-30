@@ -11,7 +11,8 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    { // https://fakerphp.github.io/
+    {
+ // https://fakerphp.github.io/
         $this->call([
             UserSeeder::class,
             SubscriberSeeder::class,
