@@ -23,6 +23,7 @@ class Recipe extends Model
         'total_time',
         'servings',
         'image_url',
+        'video_url',
         'ingredients',
         'nutritional_info',
         'premium',
