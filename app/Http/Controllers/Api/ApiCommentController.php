@@ -8,7 +8,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
-class CommentController extends ApiController
+class ApiCommentController extends ApiController
 {
     /**
      * Display a listing of the resource.
