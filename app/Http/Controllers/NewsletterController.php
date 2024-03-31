@@ -39,9 +39,9 @@ class NewsletterController extends Controller
                 'content' => $request->content,
             ]);
 
-            return redirect()->route('newsletter.show', $newsletter)->with(['success', 'Newsletter draft created!']);
+            return redirect()->route('newsletter.show', $newsletter)->with('success', 'Newsletter draft created!');
         } catch (\Throwable $th) {
-            return redirect()->back()->with(['error', $th->getMessage()]);
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
@@ -81,12 +81,12 @@ class NewsletterController extends Controller
 
             if ($newsletter->status == 'published') {
                 // Todo: Dispatch update email event
-                return redirect()->route('newsletter.show', $newsletter)->with(['success' => 'Email updates sent out.']);
+                return redirect()->route('newsletter.show', $newsletter)->with('success', 'Email updates sent out.');
             }
 
-            return redirect()->route('newsletter.show', $newsletter)->with(['success' => 'Newsletter draft updated.']);
+            return redirect()->route('newsletter.show', $newsletter)->with('success', 'Newsletter draft updated.');
         } catch (\Throwable $th) {
-            return redirect()->back()->with(['error', $th->getMessage()]);
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
@@ -99,9 +99,9 @@ class NewsletterController extends Controller
             // Todo: Dispatch newsletter publish event
             $newsletter->update(['status' => 'published']);
 
-            return redirect()->route('newsletter.show', $newsletter)->with(['success', 'Newsletter published.']);
+            return redirect()->route('newsletter.show', $newsletter)->with('success', 'Newsletter published.');
         } catch (\Throwable $th) {
-            return redirect()->back()->with(['error', $th->getMessage()]);
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 }

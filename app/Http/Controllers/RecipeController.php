@@ -51,7 +51,7 @@ class RecipeController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 400);
+                return response()->json(['error' => $validator->errors()], 400); //Todo:fix this web route
             }
 
             $user = User::first();
@@ -78,7 +78,7 @@ class RecipeController extends Controller
 
             return redirect()
                 ->route('recipe.show', ['recipe' => $recipe])
-                ->with(['success' => 'Recipe created']);
+                ->with('success', 'Recipe created');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }
@@ -168,27 +168,35 @@ class RecipeController extends Controller
     /**
      * Add or remove collaborators from recipes
      */
-    public function add_collaborators(Request $request)
+    public function add_collaborators(Request $request, Recipe $recipe)
     {
-        // Todo: Work on collaborators
+        try {
+            // Validate Recipe fields
+            $request->validate([
+                $request->collaborators => 'string|required',
+            ]);
 
-        // Validate Recipe fields
-        // $request->validate([
-        //     $request->collaborators => 'string|required'
-        // ]);
+            // Assign Collaborators to Recipe
+            $collaborators = explode(';', $request->collaborators);
+            $validator = Validator::make($collaborators, [
+                '*' => 'string|unique:users|exists:users,username',
+            ]);
 
-        // // Assign Collaborators to Recipe
+            if ($validator->fails()) {
+                return redirect()
+                    ->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
 
-        // // $validator = Validator::make($request->all(),  [
+            foreach ($collaborators as $username) {
+                $recipe->collaborators()->sync(User::where('username', $username)->first());
+            }
 
-        // foreach(explode(';', $request->collaborators) as $collaborator){ // Expect a string of semicolon delimited email addresses
-        //     $user = User::where('email', $collaborator)->first();
-
-        //     if(!$user){
-
-        //     }
-        // }
-
+            return redirect()->route('recipe.show', $recipe)->with('success', 'Collaborators updated');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage())->withInput();
+        }
     }
 
     /**
@@ -204,7 +212,7 @@ class RecipeController extends Controller
             // To get auth user
             $recipe->user_ratings()->attach(User::First(), ['rating' => $request->rating]);
 
-            return redirect()->route('recipe.show', $recipe)->with(['success', 'Recipe rated!']);
+            return redirect()->route('recipe.show', $recipe)->with('success', 'Recipe rated!');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }
@@ -216,7 +224,7 @@ class RecipeController extends Controller
             // To get auth user
             $recipe->users_liked()->attach(User::First());
 
-            return redirect()->route('recipe.show', $recipe)->with(['success', 'Recipe liked!']);
+            return redirect()->route('recipe.show', $recipe)->with('success', 'Recipe liked!');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }
