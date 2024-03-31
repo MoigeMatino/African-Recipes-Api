@@ -210,6 +210,7 @@ class RecipeController extends Controller
             ]);
 
             // To get auth user
+            $recipe->user_ratings()->detach();
             $recipe->user_ratings()->attach(User::First(), ['rating' => $request->rating]);
 
             return redirect()->route('recipe.show', $recipe)->with('success', 'Recipe rated!');
