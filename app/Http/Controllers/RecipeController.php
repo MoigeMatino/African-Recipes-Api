@@ -51,7 +51,7 @@ class RecipeController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 400); //Todo:fix this web route
+                return redirect()->back()->withErrors($validator);
             }
 
             $user = User::first();
@@ -65,6 +65,7 @@ class RecipeController extends Controller
                 'total_time' => $request->total_time,
                 'servings' => $request->servings,
                 'image_url' => $request->image_url,
+                'video_url' => $request->video_url,
                 'ingredients' => collect(explode('\\n', $request->ingredients))->toJson(),
                 'nutritional_info' => collect(explode('\\n', $request->nutritional_info))->toJson(),
             ]);
@@ -72,7 +73,36 @@ class RecipeController extends Controller
             // Assign tags to recipe
             if ($request->has('tags')) {
                 foreach ($request->tags as $tag) {
-                    $recipe->tags()->create(['name' => $tag]);
+                    $recipe->tags()->create(['tag' => $tag]);
+                }
+            }
+
+            // Assign collaborators to recipe
+            if ($request->has('collaborators')) {
+
+                // Validate collaborator field
+                $request->validate([
+                    'collaborators' => 'string',
+                ]);
+
+                // Assign Collaborators to Recipe
+                $collaborators = array_map(function ($val) {
+                    return trim($val);
+                }, explode(';', $request->collaborators));
+
+                $validator = Validator::make($collaborators, [
+                    '*' => 'string|exists:users,username',
+                ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+
+                foreach ($collaborators as $username) {
+                    $user = User::whereNot('username', $recipe->author->username)->where('username', $username)->first();
+                    if ($user) {
+                        $recipe->collaborators()->attach($user);
+                    }
                 }
             }
 
@@ -151,6 +181,37 @@ class RecipeController extends Controller
                 }
             }
 
+            // Assign collaborators to recipe
+            if ($request->has('collaborators')) {
+
+                // Validate collaborator field
+                $request->validate([
+                    'collaborators' => 'string',
+                ]);
+
+                // Assign Collaborators to Recipe
+                $collaborators = array_map(function ($val) {
+                    return trim($val);
+                }, explode(';', $request->collaborators));
+
+                $validator = Validator::make($collaborators, [
+                    '*' => 'string|exists:users,username',
+                ]);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator);
+                }
+
+                $recipe->collaborators()->detach(); // Delete all existing collaborators
+
+                foreach ($collaborators as $username) {
+                    $user = User::whereNot('username', $recipe->author->username)->where('username', $username)->first();
+                    if ($user) {
+                        $recipe->collaborators()->attach($user);
+                    }
+                }
+            }
+
             return redirect()->route('recipe.show', $recipe)->with('success', 'Recipe updated');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
@@ -171,31 +232,36 @@ class RecipeController extends Controller
     public function add_collaborators(Request $request, Recipe $recipe)
     {
         try {
-            // Validate Recipe fields
+            // Validate collaborator field
             $request->validate([
-                $request->collaborators => 'string|required',
+                'collaborators' => 'string',
             ]);
 
             // Assign Collaborators to Recipe
-            $collaborators = explode(';', $request->collaborators);
+            $collaborators = array_map(function ($val) {
+                return trim($val);
+            }, explode(';', $request->collaborators));
+
             $validator = Validator::make($collaborators, [
-                '*' => 'string|unique:users|exists:users,username',
+                '*' => 'string|exists:users,username',
             ]);
 
             if ($validator->fails()) {
-                return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput();
+                return redirect()->back()->withErrors($validator);
             }
 
+            $recipe->collaborators()->detach();
+
             foreach ($collaborators as $username) {
-                $recipe->collaborators()->sync(User::where('username', $username)->first());
+                $user = User::whereNot('username', $recipe->author->username)->where('username', $username)->first();
+                if ($user) {
+                    $recipe->collaborators()->attach($user);
+                }
             }
 
             return redirect()->route('recipe.show', $recipe)->with('success', 'Collaborators updated');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', $th->getMessage())->withInput();
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
