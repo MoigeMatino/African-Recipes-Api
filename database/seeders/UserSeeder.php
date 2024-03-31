@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Str;
+
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -23,6 +25,7 @@ class UserSeeder extends Seeder
                 'email' => $value,
             ], [
                 'name' => $key,
+                'username' => Str::lower(explode(' ', $key)[0] . "." . explode(' ', $key)[1]),
                 'email' => $value,
                 'password' => bcrypt('secret'),
             ]);
@@ -35,6 +38,7 @@ class UserSeeder extends Seeder
                 ],
                 [
                     'name' => fake()->name,
+                    'username' => fake()->userName,
                     'email' => fake()->safeemail,
                     'password' => bcrypt('secret'),
                 ]
