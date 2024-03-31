@@ -12,7 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'localhost/',
+            'http://localhost',
+            'http://localhost/*',
+            'http://laravel.test/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

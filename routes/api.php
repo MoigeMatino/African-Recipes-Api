@@ -8,4 +8,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::resource('comment', CommentController::class)->except('destroy');
+Route::resource('comment', CommentController::class)
+    ->except(['create', 'store', 'update', 'destroy'])
+    ->middleware('api');

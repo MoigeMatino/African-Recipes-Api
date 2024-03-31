@@ -11,7 +11,7 @@ class Subscriber extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $filable = [
+    protected $fillable = [
         'name',
         'email',
     ];

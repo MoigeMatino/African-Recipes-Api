@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('cook_time');
             $table->string('total_time');
             $table->integer('servings');
-            $table->string('image_url');
+            $table->string('image_url')->nullable();
+            $table->string('video_url')->nullable();
             $table->json('ingredients');
             $table->boolean('premium')->default(false);
             $table->json('nutritional_info');
