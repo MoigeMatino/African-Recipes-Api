@@ -40,7 +40,7 @@ class SubscriberController extends Controller
                 'email' => $request->email,
             ]);
 
-            return redirect()->route('subscriber.show', $subscriber)->with('success', 'Sucessfully subscribed!');
+            return redirect()->route('subscribers.show', $subscriber)->with('success', 'Sucessfully subscribed!');
         } catch (\Throwable $th) {
             redirect()->back()->with('error', $th->getMessage());
         }
@@ -73,7 +73,7 @@ class SubscriberController extends Controller
 
         $subscriber->update(['name' => $request->name]);
 
-        return redirect()->route('subscriber.show', $subscriber)->with('success', 'Field updated.');
+        return redirect()->route('subscribers.show', $subscriber)->with('success', 'Field updated.');
     }
 
     /**
