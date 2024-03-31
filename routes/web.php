@@ -12,7 +12,7 @@ Route::get('/', function () {
 Route::resource('recipe', RecipeController::class);
 Route::patch('recipe/{recipe}/like', [RecipeController::class, 'like'])->name('recipe.like');
 Route::patch('recipe/{recipe}/rate', [RecipeController::class, 'rate'])->name('recipe.rate');
-Route::patch('recipe/{recipe}/collaborator', [RecipeController::class, 'add-collaborators'])->name('recipe.add_collaborators');
+Route::patch('recipe/{recipe}/collaborator', [RecipeController::class, 'add_collaborators'])->name('recipe.add_collaborators');
 
 Route::resource('subscribers', SubscriberController::class);
 
