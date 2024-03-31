@@ -3,9 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Comment;
-use App\Models\User;
-use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class ApiCommentController extends ApiController
