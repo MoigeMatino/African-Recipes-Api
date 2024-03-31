@@ -56,7 +56,7 @@ class Recipe extends Model
 
     public function collaborators(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'collaborators', 'user_id', 'recipe_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'collaborators', 'recipe_id', 'user_id')->withTimestamps();
     }
 
     public function comments(): MorphMany
