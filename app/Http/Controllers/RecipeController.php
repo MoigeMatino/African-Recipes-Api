@@ -198,7 +198,7 @@ class RecipeController extends Controller
     {
         try {
             $request->validate([
-                'rating' => 'required|integer|min:1|max:5'
+                'rating' => 'required|integer|min:1|max:5',
             ]);
 
             // To get auth user
