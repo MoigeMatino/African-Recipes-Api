@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Tag extends Model
@@ -13,9 +12,9 @@ class Tag extends Model
 
     protected $fillable = ['tag'];
 
-    public function recipes(): BelongsToMany
+    public function recipes(): MorphMany
     {
-        return $this->belongsToMany(Recipe::class, 'recipe_tag', 'tag_id', 'recipe_id')->withTimestamps();
+        return $this->morphMany(Recipe::class, 'taggable');
     }
 
     public function newsletters(): MorphMany
