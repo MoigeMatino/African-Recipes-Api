@@ -119,9 +119,11 @@ class RecipeController extends Controller
      */
     public function show(Recipe $recipe)
     {
-        return Recipe::with(['author', 'collaborators', 'tags', 'comments' => function ($query) {
+        $recipe = Recipe::with(['author', 'users_liked', 'user_ratings', 'collaborators', 'tags', 'comments' => function ($query) {
             return $query->latest()->paginate(15);
         }])->find($recipe->id);
+
+        return response()->json(['recipe' => $recipe, 'likes' => $recipe->likes(), 'rating' => $recipe->rating()]);
     }
 
     /**
@@ -275,9 +277,8 @@ class RecipeController extends Controller
                 'rating' => 'required|integer|min:1|max:5',
             ]);
 
-            // To get auth user
-            $recipe->user_ratings()->detach();
-            $recipe->user_ratings()->attach(User::First(), ['rating' => $request->rating]);
+            // Todo: get auth user rating and remove duplicates
+            $recipe->user_ratings()->attach(User::Find(2), ['rating' => $request->rating]);
 
             return redirect()->route('recipe.show', $recipe)->with('success', 'Recipe rated!');
         } catch (\Throwable $th) {
@@ -288,7 +289,7 @@ class RecipeController extends Controller
     public function like(Request $request, Recipe $recipe)
     {
         try {
-            // To get auth user
+            // Todo: get auth user and remove duplicate likes
             $recipe->users_liked()->attach(User::First());
 
             return redirect()->route('recipe.show', $recipe)->with('success', 'Recipe liked!');
