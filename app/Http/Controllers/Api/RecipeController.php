@@ -54,6 +54,7 @@ class RecipeController extends ApiController
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             };
+            //* TODO change this to the currently logged in users 
             $user = User::find(2);
             $recipe = $user->recipes()->create([
                 'title' => $request->title,
@@ -79,8 +80,8 @@ class RecipeController extends ApiController
             // Add collaborators
             if ($request->has('collaborators')) {
                 $request->validate([
-                    //* FIXME:Shouldn't the collaborators be an array, not string
-                    'collaborators' => 'array'                
+                    
+                    'collaborators' => 'string'                
                 ]);
 
                 $collaborators = $request->collaborators;
