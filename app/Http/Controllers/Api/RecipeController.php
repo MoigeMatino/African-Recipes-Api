@@ -18,7 +18,7 @@ class RecipeController extends ApiController
         }])->paginate(10);
     }
 
-    public function show($recipe)
+    public function show(Recipe $recipe)
     {
         $recipe = Recipe::with([
             'author', 
