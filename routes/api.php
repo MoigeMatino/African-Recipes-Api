@@ -11,3 +11,8 @@ Route::get('/user', function (Request $request) {
 Route::resource('comment', ApiCommentController::class)
     ->except(['create', 'store', 'update', 'destroy'])
     ->middleware('api');
+
+Route::resource('newsletter', NewsletterController::class)
+    ->except(['destroy']);
+
+Route::patch('newsletter/{newsletter}/publish', [NewsletterController::class, 'publish'])->name('newsletter.publish');

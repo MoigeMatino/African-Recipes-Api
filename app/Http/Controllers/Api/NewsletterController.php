@@ -87,5 +87,15 @@ class NewsletterController extends ApiController
 
     }
 
+    public function publish(Request $request, Newsletter $newsletter)
+    {
+        $newsletter->update([
+           'status' => 'published',
+        ]);
+
+        return response()->json(['success' => 'Newsletter published', 'published_newsletter' => $newsletter]);
+
+    }
+
 }
     
