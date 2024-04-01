@@ -144,7 +144,7 @@ class RecipeController extends ApiController
                 'nutritional_info' => collect(explode('\\n', $request->nutritional_info))->toJson(),
             ]);
 
-            // Assign tags to recipe
+            // Update tags to recipe
             if ($request->has('tags')) {
                 // Delete previous tags
                 //* FIXME what if tags are being updated through adding new ones, no need to delete existing
@@ -160,7 +160,7 @@ class RecipeController extends ApiController
                 }
             }
 
-            // Assign collaborators to recipe
+            // Update collaborators to recipe
             if ($request->has('collaborators')) {
 
                 // Validate collaborator field
@@ -198,7 +198,5 @@ class RecipeController extends ApiController
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
-}
-
-    
+}   
 

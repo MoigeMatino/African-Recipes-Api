@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Newsletter;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\ApiController;
 
 class NewsletterController extends ApiController
 {
