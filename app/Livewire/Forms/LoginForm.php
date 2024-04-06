@@ -12,7 +12,6 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-
     #[Validate('required|string|min:2')]
     public string $emailOrUsername = '';
 
@@ -29,7 +28,7 @@ class LoginForm extends Form
      */
     public function attemptAuth(array $fields): void
     {
-        if (!Auth::attempt($fields, $this->remember)) {
+        if (! Auth::attempt($fields, $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -56,7 +55,7 @@ class LoginForm extends Form
      */
     protected function ensureIsNotRateLimited(): void
     {
-        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -77,6 +76,6 @@ class LoginForm extends Form
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->emailOrUsername) . '|' . request()->ip());
+        return Str::transliterate(Str::lower($this->emailOrUsername).'|'.request()->ip());
     }
 }
